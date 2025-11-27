@@ -15,75 +15,93 @@ new
 class extends Component {
     public function with(): array
     {
+        $hero = HeroSection::published()->first();
+        $videoUrl = $hero?->video_url ?: SiteSetting::get('hero_video_url', '');
+
         return [
-            'hero' => HeroSection::published()->first(),
+            'hero' => $hero,
+            'videoUrl' => $videoUrl,
+            'youtubeId' => $this->extractYoutubeId($videoUrl),
             'testimonials' => Testimonial::published()->featured()->ordered()->take(6)->get(),
             'ctas' => CallToAction::published()->get(),
             'banner' => Banner::active()->position('home')->first(),
         ];
     }
+
+    private function extractYoutubeId(?string $url): ?string
+    {
+        if (!$url) return null;
+
+        $patterns = [
+            '/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([a-zA-Z0-9_-]{11})/',
+            '/^([a-zA-Z0-9_-]{11})$/',
+        ];
+
+        foreach ($patterns as $pattern) {
+            if (preg_match($pattern, $url, $matches)) {
+                return $matches[1];
+            }
+        }
+
+        return null;
+    }
 }; ?>
 
 <div class="overflow-hidden">
-    <!-- Hero Section with Enhanced Contrast -->
+    <!-- Hero Section - Premium Redesign with Video -->
     <section
         x-data="{
-            currentSlide: 0,
-            slides: [
-                { stat: '10,000+', label: 'Families Helped', icon: 'users' },
-                { stat: '$50M+', label: 'In Savings Achieved', icon: 'currency-dollar' },
-                { stat: '98%', label: 'Success Rate', icon: 'chart-bar' }
-            ],
+            shown: false,
+            videoPlaying: false,
             init() {
-                setInterval(() => {
-                    this.currentSlide = (this.currentSlide + 1) % this.slides.length;
-                }, 4000);
+                setTimeout(() => this.shown = true, 100);
             }
         }"
-        class="relative min-h-[90vh] lg:min-h-screen"
+        class="relative min-h-screen overflow-hidden"
     >
-        <!-- Background with gradient overlay for better contrast -->
-        <div class="absolute inset-0 bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900"></div>
+        <!-- Layered Background -->
+        <div class="absolute inset-0">
+            <!-- Base gradient -->
+            <div class="absolute inset-0 bg-gradient-to-br from-slate-950 via-slate-900 to-blue-950"></div>
 
-        <!-- Animated background pattern -->
-        <div class="absolute inset-0 opacity-[0.03]">
-            <svg class="h-full w-full" xmlns="http://www.w3.org/2000/svg">
-                <defs>
-                    <pattern id="hero-pattern" x="0" y="0" width="40" height="40" patternUnits="userSpaceOnUse">
-                        <circle cx="20" cy="20" r="1" fill="white"/>
-                    </pattern>
-                </defs>
-                <rect width="100%" height="100%" fill="url(#hero-pattern)"/>
-            </svg>
+            <!-- Helping hands background image with overlay -->
+            <div
+                class="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-20"
+                style="background-image: url('https://images.unsplash.com/photo-1582213782179-e0d53f98f2ca?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80');"
+            ></div>
+
+            <!-- Gradient overlay for text contrast -->
+            <div class="absolute inset-0 bg-gradient-to-r from-slate-950/95 via-slate-950/80 to-slate-950/60 lg:via-slate-950/70 lg:to-transparent"></div>
+
+            <!-- Decorative gradient orbs -->
+            <div class="absolute -left-40 top-1/4 h-[500px] w-[500px] rounded-full bg-blue-600/20 blur-[120px]"></div>
+            <div class="absolute -right-40 bottom-1/4 h-[400px] w-[400px] rounded-full bg-cyan-600/15 blur-[100px]"></div>
+            <div class="absolute right-1/4 top-20 h-[300px] w-[300px] rounded-full bg-emerald-600/10 blur-[80px]"></div>
+
+            <!-- Subtle grid pattern -->
+            <div class="absolute inset-0 opacity-[0.02]" style="background-image: url('data:image/svg+xml,%3Csvg width=\'60\' height=\'60\' viewBox=\'0 0 60 60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'%23ffffff\' fill-opacity=\'1\'%3E%3Cpath d=\'M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E');"></div>
         </div>
 
-        <!-- Gradient orbs for visual depth -->
-        <div class="absolute left-1/4 top-1/4 h-96 w-96 -translate-x-1/2 -translate-y-1/2 rounded-full bg-blue-500/20 blur-3xl"></div>
-        <div class="absolute bottom-1/4 right-1/4 h-96 w-96 translate-x-1/2 translate-y-1/2 rounded-full bg-indigo-500/20 blur-3xl"></div>
+        <!-- Main Content -->
+        <div class="relative z-10 flex min-h-screen items-center">
+            <div class="mx-auto w-full max-w-7xl px-4 py-24 sm:px-6 lg:px-8 lg:py-32">
+                <div class="grid items-center gap-12 lg:grid-cols-2 lg:gap-20">
 
-        <!-- Content -->
-        <div class="relative flex min-h-[90vh] items-center lg:min-h-screen">
-            <div class="mx-auto w-full max-w-7xl px-4 py-20 sm:px-6 lg:px-8 lg:py-32">
-                <div class="grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
-                    <!-- Left Column - Text Content -->
-                    <div
-                        x-data="{ shown: false }"
-                        x-init="setTimeout(() => shown = true, 100)"
-                        class="text-center lg:text-left"
-                    >
-                        <!-- Badge -->
+                    <!-- Left Column - Content -->
+                    <div class="text-center lg:text-left">
+                        <!-- Trust Badge -->
                         <div
                             x-show="shown"
                             x-transition:enter="transition ease-out duration-700"
                             x-transition:enter-start="opacity-0 -translate-y-4"
                             x-transition:enter-end="opacity-100 translate-y-0"
-                            class="mb-6 inline-flex items-center gap-2 rounded-full border border-blue-400/30 bg-blue-500/10 px-4 py-2 backdrop-blur-sm"
+                            class="mb-8 inline-flex items-center gap-3 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-5 py-2.5 backdrop-blur-sm"
                         >
-                            <span class="relative flex h-2 w-2">
+                            <span class="relative flex h-2.5 w-2.5">
                                 <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75"></span>
-                                <span class="relative inline-flex h-2 w-2 rounded-full bg-emerald-400"></span>
+                                <span class="relative inline-flex h-2.5 w-2.5 rounded-full bg-emerald-400"></span>
                             </span>
-                            <span class="text-sm font-medium text-blue-100">{{ __('HUD-Approved Housing Counseling Agency') }}</span>
+                            <span class="text-sm font-semibold tracking-wide text-emerald-300">{{ __('HUD-Approved Housing Counseling Agency') }}</span>
                         </div>
 
                         <!-- Main Heading -->
@@ -92,13 +110,13 @@ class extends Component {
                             x-transition:enter="transition ease-out duration-700 delay-150"
                             x-transition:enter-start="opacity-0 -translate-y-4"
                             x-transition:enter-end="opacity-100 translate-y-0"
-                            class="text-4xl font-bold tracking-tight text-white sm:text-5xl lg:text-6xl xl:text-7xl"
+                            class="text-4xl font-bold leading-[1.1] tracking-tight text-white sm:text-5xl lg:text-6xl xl:text-7xl"
                         >
-                            @if($hero)
-                                <span class="block">{{ $hero->title }}</span>
+                            @if($hero && $hero->title)
+                                {!! nl2br(e($hero->title)) !!}
                             @else
                                 <span class="block">{{ __('Free Help to') }}</span>
-                                <span class="mt-2 block bg-gradient-to-r from-blue-400 via-cyan-400 to-emerald-400 bg-clip-text text-transparent">
+                                <span class="mt-2 block bg-gradient-to-r from-cyan-400 via-blue-400 to-emerald-400 bg-clip-text text-transparent">
                                     {{ __('Keep Your Home') }}
                                 </span>
                             @endif
@@ -110,14 +128,48 @@ class extends Component {
                             x-transition:enter="transition ease-out duration-700 delay-300"
                             x-transition:enter-start="opacity-0 -translate-y-4"
                             x-transition:enter-end="opacity-100 translate-y-0"
-                            class="mx-auto mt-6 max-w-xl text-lg leading-relaxed text-slate-300 lg:mx-0 lg:text-xl"
+                            class="mx-auto mt-8 max-w-xl text-lg leading-relaxed text-slate-300 lg:mx-0 lg:text-xl"
                         >
                             @if($hero && $hero->subtitle)
                                 {{ $hero->subtitle }}
                             @else
-                                {{ __('Get confidential assistance to avoid foreclosure and stay in your home. Our certified counselors are here to help — completely free of charge.') }}
+                                {{ __('Get confidential assistance to avoid foreclosure and stay in your home. Our HUD-approved housing counselors are here to help — completely free of charge.') }}
                             @endif
                         </p>
+
+                        <!-- Key Benefits - Compact -->
+                        <div
+                            x-show="shown"
+                            x-transition:enter="transition ease-out duration-700 delay-400"
+                            x-transition:enter-start="opacity-0"
+                            x-transition:enter-end="opacity-100"
+                            class="mt-8 flex flex-wrap items-center justify-center gap-6 lg:justify-start"
+                        >
+                            <div class="flex items-center gap-2">
+                                <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-500/20">
+                                    <svg class="h-4 w-4 text-emerald-400" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                                    </svg>
+                                </div>
+                                <span class="text-sm font-medium text-slate-300">{{ __('100% Free') }}</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-500/20">
+                                    <svg class="h-4 w-4 text-blue-400" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zm11.541 3.708a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                                    </svg>
+                                </div>
+                                <span class="text-sm font-medium text-slate-300">{{ __('Confidential') }}</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-amber-500/20">
+                                    <svg class="h-4 w-4 text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"/>
+                                    </svg>
+                                </div>
+                                <span class="text-sm font-medium text-slate-300">{{ __('HUD Certified') }}</span>
+                            </div>
+                        </div>
 
                         <!-- CTA Buttons -->
                         <div
@@ -128,143 +180,154 @@ class extends Component {
                             class="mt-10 flex flex-col items-center gap-4 sm:flex-row lg:justify-start"
                         >
                             <a
-                                href="{{ $hero && $hero->cta_url ? $hero->cta_url : route('contact') }}"
+                                href="{{ $hero?->cta_url ?: route('contact') }}"
                                 wire:navigate
-                                class="group relative inline-flex items-center justify-center gap-2 overflow-hidden rounded-xl bg-white px-8 py-4 text-base font-semibold text-slate-900 shadow-lg shadow-white/25 transition-all duration-300 hover:scale-105 hover:shadow-xl hover:shadow-white/30"
+                                class="group relative inline-flex items-center justify-center gap-2.5 overflow-hidden rounded-xl bg-gradient-to-r from-emerald-500 to-cyan-500 px-8 py-4 text-base font-semibold text-white shadow-lg shadow-emerald-500/30 transition-all duration-300 hover:scale-[1.02] hover:shadow-xl hover:shadow-emerald-500/40"
                             >
-                                <span class="relative z-10">{{ $hero && $hero->cta_text ? $hero->cta_text : __('Get Free Help Today') }}</span>
-                                <svg class="relative z-10 h-5 w-5 transition-transform duration-300 group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+                                <span class="relative z-10">{{ $hero?->cta_text ?: __('Get Free Help Today') }}</span>
+                                <svg class="relative z-10 h-5 w-5 transition-transform duration-300 group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
                                 </svg>
-                                <div class="absolute inset-0 -z-10 bg-gradient-to-r from-blue-100 to-cyan-100 opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>
+                                <div class="absolute inset-0 -z-10 bg-gradient-to-r from-cyan-500 to-emerald-500 opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>
                             </a>
                             <a
-                                href="{{ $hero && $hero->cta_secondary_url ? $hero->cta_secondary_url : route('services') }}"
+                                href="{{ $hero?->cta_secondary_url ?: route('services') }}"
                                 wire:navigate
-                                class="group inline-flex items-center gap-2 rounded-xl border border-white/20 bg-white/5 px-8 py-4 text-base font-semibold text-white backdrop-blur-sm transition-all duration-300 hover:border-white/40 hover:bg-white/10"
+                                class="group inline-flex items-center gap-2.5 rounded-xl border border-white/20 bg-white/5 px-8 py-4 text-base font-semibold text-white backdrop-blur-sm transition-all duration-300 hover:border-white/40 hover:bg-white/10"
                             >
-                                <span>{{ $hero && $hero->cta_secondary_text ? $hero->cta_secondary_text : __('Learn About Our Services') }}</span>
-                                <svg class="h-5 w-5 transition-transform duration-300 group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                                <span>{{ $hero?->cta_secondary_text ?: __('Learn About Our Services') }}</span>
+                                <svg class="h-5 w-5 transition-transform duration-300 group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
                                 </svg>
                             </a>
-                        </div>
-
-                        <!-- Trust Indicators (Mobile) -->
-                        <div
-                            x-show="shown"
-                            x-transition:enter="transition ease-out duration-700 delay-700"
-                            x-transition:enter-start="opacity-0"
-                            x-transition:enter-end="opacity-100"
-                            class="mt-12 flex items-center justify-center gap-8 lg:hidden"
-                        >
-                            <div class="flex items-center gap-2">
-                                <svg class="h-5 w-5 text-emerald-400" fill="currentColor" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-                                </svg>
-                                <span class="text-sm text-slate-300">{{ __('100% Free') }}</span>
-                            </div>
-                            <div class="flex items-center gap-2">
-                                <svg class="h-5 w-5 text-emerald-400" fill="currentColor" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-                                </svg>
-                                <span class="text-sm text-slate-300">{{ __('Confidential') }}</span>
-                            </div>
                         </div>
                     </div>
 
-                    <!-- Right Column - Stats Card with Carousel -->
+                    <!-- Right Column - Video Player -->
                     <div
-                        x-data="{ shown: false }"
-                        x-init="setTimeout(() => shown = true, 400)"
-                        class="hidden lg:block"
+                        x-show="shown"
+                        x-transition:enter="transition ease-out duration-1000 delay-300"
+                        x-transition:enter-start="opacity-0 translate-x-12"
+                        x-transition:enter-end="opacity-100 translate-x-0"
+                        class="relative"
                     >
-                        <div
-                            x-show="shown"
-                            x-transition:enter="transition ease-out duration-1000"
-                            x-transition:enter-start="opacity-0 translate-x-12"
-                            x-transition:enter-end="opacity-100 translate-x-0"
-                            class="relative"
-                        >
-                            <!-- Decorative elements -->
-                            <div class="absolute -right-4 -top-4 h-72 w-72 rounded-full bg-gradient-to-br from-blue-500/30 to-transparent blur-2xl"></div>
-                            <div class="absolute -bottom-8 -left-8 h-64 w-64 rounded-full bg-gradient-to-tr from-emerald-500/20 to-transparent blur-2xl"></div>
+                        <!-- Decorative elements -->
+                        <div class="absolute -right-8 -top-8 h-64 w-64 rounded-full bg-gradient-to-br from-cyan-500/30 to-transparent blur-3xl"></div>
+                        <div class="absolute -bottom-8 -left-8 h-48 w-48 rounded-full bg-gradient-to-tr from-emerald-500/20 to-transparent blur-3xl"></div>
 
-                            <!-- Main Card -->
-                            <div class="relative overflow-hidden rounded-3xl border border-white/10 bg-white/5 p-8 backdrop-blur-xl">
-                                <!-- Card Header -->
-                                <div class="mb-8 flex items-center justify-between">
-                                    <div class="flex items-center gap-3">
-                                        <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-cyan-500">
-                                            <svg class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
-                                            </svg>
-                                        </div>
-                                        <div>
-                                            <p class="text-sm font-medium text-slate-400">{{ __('Our Impact') }}</p>
-                                            <p class="text-lg font-semibold text-white">{{ __('Proven Results') }}</p>
-                                        </div>
-                                    </div>
-                                    <div class="flex gap-1">
-                                        <template x-for="(slide, index) in slides" :key="index">
-                                            <button
-                                                @click="currentSlide = index"
-                                                :class="currentSlide === index ? 'bg-white' : 'bg-white/30'"
-                                                class="h-2 w-2 rounded-full transition-all duration-300"
-                                            ></button>
+                        @if($youtubeId)
+                            <!-- Video Container -->
+                            <div class="relative">
+                                <!-- Outer glow frame -->
+                                <div class="absolute -inset-1 rounded-2xl bg-gradient-to-r from-cyan-500/50 via-blue-500/50 to-emerald-500/50 opacity-60 blur-sm"></div>
+
+                                <!-- Video wrapper -->
+                                <div class="relative overflow-hidden rounded-2xl border border-white/10 bg-slate-900/80 shadow-2xl shadow-black/40 backdrop-blur-sm">
+                                    <!-- Video thumbnail with play button (lazy load) -->
+                                    <div
+                                        x-data="{ loaded: false }"
+                                        class="relative aspect-video w-full"
+                                    >
+                                        <template x-if="!loaded">
+                                            <div class="absolute inset-0">
+                                                <!-- Thumbnail -->
+                                                <img
+                                                    src="https://img.youtube.com/vi/{{ $youtubeId }}/maxresdefault.jpg"
+                                                    alt="{{ __('Watch our video') }}"
+                                                    class="h-full w-full object-cover"
+                                                    onerror="this.src='https://img.youtube.com/vi/{{ $youtubeId }}/hqdefault.jpg'"
+                                                >
+                                                <!-- Gradient overlay -->
+                                                <div class="absolute inset-0 bg-gradient-to-t from-slate-900/60 via-transparent to-slate-900/20"></div>
+                                                <!-- Play button -->
+                                                <button
+                                                    @click="loaded = true"
+                                                    class="absolute inset-0 flex items-center justify-center transition-transform duration-300 hover:scale-105"
+                                                >
+                                                    <div class="flex h-20 w-20 items-center justify-center rounded-full bg-white/95 shadow-2xl shadow-black/30 transition-all duration-300 hover:bg-white">
+                                                        <svg class="ml-1.5 h-8 w-8 text-slate-900" fill="currentColor" viewBox="0 0 24 24">
+                                                            <path d="M8 5v14l11-7z"/>
+                                                        </svg>
+                                                    </div>
+                                                </button>
+                                                <!-- Video label -->
+                                                <div class="absolute bottom-4 left-4 flex items-center gap-2 rounded-lg bg-black/50 px-3 py-1.5 backdrop-blur-sm">
+                                                    <svg class="h-4 w-4 text-red-500" fill="currentColor" viewBox="0 0 24 24">
+                                                        <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814z"/>
+                                                        <path fill="#fff" d="M9.545 15.568V8.432L15.818 12z"/>
+                                                    </svg>
+                                                    <span class="text-xs font-medium text-white">{{ __('Watch Video') }}</span>
+                                                </div>
+                                            </div>
+                                        </template>
+                                        <template x-if="loaded">
+                                            <iframe
+                                                src="https://www.youtube.com/embed/{{ $youtubeId }}?autoplay=1&rel=0&modestbranding=1"
+                                                class="absolute inset-0 h-full w-full"
+                                                frameborder="0"
+                                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                                allowfullscreen
+                                            ></iframe>
                                         </template>
                                     </div>
                                 </div>
-
-                                <!-- Animated Stats Carousel -->
-                                <div class="relative h-40">
-                                    <template x-for="(slide, index) in slides" :key="index">
-                                        <div
-                                            x-show="currentSlide === index"
-                                            x-transition:enter="transition ease-out duration-500"
-                                            x-transition:enter-start="opacity-0 translate-x-8"
-                                            x-transition:enter-end="opacity-100 translate-x-0"
-                                            x-transition:leave="transition ease-in duration-300"
-                                            x-transition:leave-start="opacity-100 translate-x-0"
-                                            x-transition:leave-end="opacity-0 -translate-x-8"
-                                            class="absolute inset-0"
-                                        >
-                                            <div class="text-center">
-                                                <p class="bg-gradient-to-r from-white via-blue-100 to-cyan-100 bg-clip-text text-6xl font-bold text-transparent" x-text="slide.stat"></p>
-                                                <p class="mt-2 text-xl text-slate-300" x-text="slide.label"></p>
-                                            </div>
-                                        </div>
-                                    </template>
+                            </div>
+                        @else
+                            <!-- Stats Card Fallback when no video -->
+                            <div class="relative overflow-hidden rounded-2xl border border-white/10 bg-white/5 p-8 backdrop-blur-xl">
+                                <!-- Card Header -->
+                                <div class="mb-8 flex items-center gap-4">
+                                    <div class="flex h-14 w-14 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-500 to-cyan-500 shadow-lg shadow-emerald-500/30">
+                                        <svg class="h-7 w-7 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <p class="text-sm font-medium text-slate-400">{{ __('Our Impact') }}</p>
+                                        <p class="text-xl font-bold text-white">{{ __('Proven Results') }}</p>
+                                    </div>
                                 </div>
 
-                                <!-- Bottom Stats Grid -->
-                                <div class="mt-8 grid grid-cols-3 gap-4 border-t border-white/10 pt-8">
+                                <!-- Main Stat -->
+                                <div class="mb-8 text-center">
+                                    <p class="bg-gradient-to-r from-white via-cyan-200 to-emerald-200 bg-clip-text text-6xl font-bold tracking-tight text-transparent sm:text-7xl">$50M+</p>
+                                    <p class="mt-2 text-lg text-slate-300">{{ __('In Savings Achieved') }}</p>
+                                </div>
+
+                                <!-- Stats Grid -->
+                                <div class="grid grid-cols-3 gap-4 border-t border-white/10 pt-8">
                                     <div class="text-center">
-                                        <p class="text-2xl font-bold text-white">100%</p>
-                                        <p class="mt-1 text-xs text-slate-400">{{ __('Free Service') }}</p>
+                                        <p class="text-2xl font-bold text-white">10K+</p>
+                                        <p class="mt-1 text-xs text-slate-400">{{ __('Families Helped') }}</p>
+                                    </div>
+                                    <div class="text-center">
+                                        <p class="text-2xl font-bold text-white">98%</p>
+                                        <p class="mt-1 text-xs text-slate-400">{{ __('Success Rate') }}</p>
                                     </div>
                                     <div class="text-center">
                                         <p class="text-2xl font-bold text-white">24/7</p>
                                         <p class="mt-1 text-xs text-slate-400">{{ __('Support') }}</p>
                                     </div>
-                                    <div class="text-center">
-                                        <p class="text-2xl font-bold text-white">HUD</p>
-                                        <p class="mt-1 text-xs text-slate-400">{{ __('Certified') }}</p>
-                                    </div>
                                 </div>
                             </div>
-                        </div>
+                        @endif
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Scroll Indicator -->
-        <div class="absolute bottom-8 left-1/2 -translate-x-1/2">
-            <div class="flex flex-col items-center gap-2">
-                <span class="text-xs font-medium uppercase tracking-widest text-slate-400">{{ __('Scroll') }}</span>
-                <div class="flex h-10 w-6 items-start justify-center rounded-full border-2 border-slate-400/50 p-1.5">
-                    <div class="h-2 w-1 animate-bounce rounded-full bg-slate-400"></div>
+        <!-- Bottom Scroll Indicator -->
+        <div class="absolute bottom-8 left-1/2 z-10 -translate-x-1/2">
+            <div
+                x-show="shown"
+                x-transition:enter="transition ease-out duration-700 delay-700"
+                x-transition:enter-start="opacity-0 translate-y-4"
+                x-transition:enter-end="opacity-100 translate-y-0"
+                class="flex flex-col items-center gap-2"
+            >
+                <span class="text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-500">{{ __('Scroll') }}</span>
+                <div class="flex h-10 w-6 items-start justify-center rounded-full border-2 border-slate-600/50 p-1.5">
+                    <div class="h-2 w-1 animate-bounce rounded-full bg-slate-500"></div>
                 </div>
             </div>
         </div>

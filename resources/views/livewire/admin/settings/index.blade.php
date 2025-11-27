@@ -16,6 +16,7 @@ class extends Component {
         $this->settings = [
             'site_name' => SiteSetting::get('site_name', 'Free Help To Keep Your Home'),
             'site_tagline' => SiteSetting::get('site_tagline', ''),
+            'hero_video_url' => SiteSetting::get('hero_video_url', ''),
             'phone_primary' => SiteSetting::get('phone_primary', ''),
             'phone_secondary' => SiteSetting::get('phone_secondary', ''),
             'email' => SiteSetting::get('email', ''),
@@ -34,6 +35,7 @@ class extends Component {
     {
         SiteSetting::set('site_name', $this->settings['site_name'], 'general');
         SiteSetting::set('site_tagline', $this->settings['site_tagline'], 'general');
+        SiteSetting::set('hero_video_url', $this->settings['hero_video_url'], 'general');
         SiteSetting::set('phone_primary', $this->settings['phone_primary'], 'contact');
         SiteSetting::set('phone_secondary', $this->settings['phone_secondary'], 'contact');
         SiteSetting::set('email', $this->settings['email'], 'contact');
@@ -116,6 +118,11 @@ class extends Component {
                 <div>
                     <label class="mb-2 block text-sm font-medium text-slate-700 dark:text-slate-300">{{ __('Google Analytics ID') }}</label>
                     <input type="text" wire:model="settings.google_analytics_id" placeholder="G-XXXXXXXXXX" class="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-slate-900 transition-all duration-200 placeholder:text-slate-400 focus:border-blue-500 focus:outline-none focus:ring-4 focus:ring-blue-500/10 dark:border-slate-700 dark:bg-slate-800 dark:text-white dark:placeholder:text-slate-500 dark:focus:border-blue-500"/>
+                </div>
+                <div class="sm:col-span-2">
+                    <label class="mb-2 block text-sm font-medium text-slate-700 dark:text-slate-300">{{ __('Hero Video URL (Default)') }}</label>
+                    <input type="text" wire:model="settings.hero_video_url" placeholder="https://www.youtube.com/watch?v=..." class="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-slate-900 transition-all duration-200 placeholder:text-slate-400 focus:border-blue-500 focus:outline-none focus:ring-4 focus:ring-blue-500/10 dark:border-slate-700 dark:bg-slate-800 dark:text-white dark:placeholder:text-slate-500 dark:focus:border-blue-500"/>
+                    <p class="mt-1.5 text-xs text-slate-500 dark:text-slate-400">{{ __('Default YouTube video for the homepage hero section. Can be overridden per hero section.') }}</p>
                 </div>
             </div>
         </div>

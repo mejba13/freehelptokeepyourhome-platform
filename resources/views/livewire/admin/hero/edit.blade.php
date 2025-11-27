@@ -14,6 +14,7 @@ class extends Component {
     public string $name = '';
     public string $title = '';
     public string $subtitle = '';
+    public string $video_url = '';
     public string $cta_text = '';
     public string $cta_url = '';
     public string $cta_secondary_text = '';
@@ -25,6 +26,7 @@ class extends Component {
         $this->heroSection = $heroSection;
         $this->fill($heroSection->only(['name', 'title', 'status']));
         $this->subtitle = $heroSection->subtitle ?? '';
+        $this->video_url = $heroSection->video_url ?? '';
         $this->cta_text = $heroSection->cta_text ?? '';
         $this->cta_url = $heroSection->cta_url ?? '';
         $this->cta_secondary_text = $heroSection->cta_secondary_text ?? '';
@@ -43,6 +45,7 @@ class extends Component {
             'name' => ['required', 'string', 'max:255'],
             'title' => ['required', 'string', 'max:255'],
             'subtitle' => ['nullable', 'string'],
+            'video_url' => ['nullable', 'string', 'max:500'],
             'cta_text' => ['nullable', 'string', 'max:255'],
             'cta_url' => ['nullable', 'string', 'max:255'],
             'cta_secondary_text' => ['nullable', 'string', 'max:255'],
@@ -80,6 +83,12 @@ class extends Component {
                             <flux:field>
                                 <flux:label>{{ __('Subtitle') }}</flux:label>
                                 <flux:textarea wire:model="subtitle" rows="3" />
+                            </flux:field>
+                            <flux:field>
+                                <flux:label>{{ __('YouTube Video URL') }}</flux:label>
+                                <flux:input wire:model="video_url" placeholder="{{ __('https://www.youtube.com/watch?v=...') }}" />
+                                <flux:description>{{ __('Enter a YouTube URL to display in the hero section') }}</flux:description>
+                                <flux:error name="video_url" />
                             </flux:field>
                             <div class="grid gap-4 sm:grid-cols-2">
                                 <flux:field>

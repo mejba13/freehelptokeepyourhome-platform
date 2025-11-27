@@ -12,6 +12,7 @@ class HeroSection extends Model implements HasMedia
 {
     /** @use HasFactory<\Database\Factories\HeroSectionFactory> */
     use HasFactory;
+
     use InteractsWithMedia;
 
     protected $fillable = [
@@ -19,6 +20,7 @@ class HeroSection extends Model implements HasMedia
         'title',
         'subtitle',
         'background_image',
+        'video_url',
         'cta_text',
         'cta_url',
         'cta_secondary_text',

@@ -28,4 +28,5 @@ yarn-error.log
 CLAUDE.md
 *.md
 !README.md
+!PROJECT_DOCUMENT.md
 AGENTS.md
