@@ -75,14 +75,14 @@
             <!-- CTA Button (Desktop) -->
             <div class="hidden lg:block">
                 <a
-                    href="{{ route('contact') }}"
+                    href="{{ route('book-appointment') }}"
                     wire:navigate
                     class="group inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 to-blue-700 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-blue-600/30 transition-all duration-300 hover:shadow-xl hover:shadow-blue-600/40"
                 >
-                    <span>{{ __('Get Free Help') }}</span>
-                    <svg class="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
                     </svg>
+                    <span>{{ __('Book Appointment') }}</span>
                 </a>
             </div>
 
@@ -156,15 +156,15 @@
 
         <div class="mt-6 border-t border-slate-200 pt-6 dark:border-slate-700">
             <a
-                href="{{ route('contact') }}"
+                href="{{ route('book-appointment') }}"
                 wire:navigate
                 @click="mobileOpen = false"
                 class="flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 to-blue-700 px-6 py-4 text-base font-semibold text-white shadow-lg shadow-blue-600/30"
             >
-                <span>{{ __('Get Free Help Today') }}</span>
                 <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
                 </svg>
+                <span>{{ __('Book Appointment') }}</span>
             </a>
         </div>
 

@@ -11,6 +11,7 @@ Volt::route('/services', 'public.services')->name('services');
 Volt::route('/why-is-it-free', 'public.why-is-it-free')->name('why-is-it-free');
 Volt::route('/testimonials', 'public.testimonials')->name('testimonials');
 Volt::route('/contact', 'public.contact')->name('contact');
+Volt::route('/book-appointment', 'public.book-appointment')->name('book-appointment');
 
 // Sitemap
 Route::get('/sitemap.xml', function () {
@@ -80,6 +81,11 @@ Route::middleware(['auth', 'verified', 'role:admin|editor'])->prefix('admin')->n
 
     // Site Settings
     Volt::route('settings', 'admin.settings.index')->name('settings.index');
+
+    // Appointments
+    Volt::route('appointments', 'admin.appointments.index')->name('appointments.index');
+    Volt::route('appointments/settings', 'admin.appointments.settings')->name('appointments.settings');
+    Volt::route('appointments/{appointment}', 'admin.appointments.show')->name('appointments.show');
 
     // Admin-only routes
     Route::middleware('role:admin')->group(function () {

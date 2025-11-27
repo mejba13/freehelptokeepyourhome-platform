@@ -178,24 +178,44 @@
                     <!-- Communications Section -->
                     <div class="mb-8">
                         <p class="mb-3 px-3 text-xs font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500">{{ __('Communications') }}</p>
-                        <a
-                            href="{{ route('admin.submissions.index') }}"
-                            wire:navigate
-                            class="group flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all duration-200 {{ request()->routeIs('admin.submissions.*') ? 'nav-item-active text-blue-600 dark:text-blue-400' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-white' }}"
-                        >
-                            <div class="flex h-9 w-9 items-center justify-center rounded-lg {{ request()->routeIs('admin.submissions.*') ? 'bg-gradient-to-br from-blue-500 to-cyan-500 text-white shadow-lg shadow-blue-500/30' : 'bg-slate-100 text-slate-500 group-hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-400 dark:group-hover:bg-slate-700' }} transition-all duration-200">
-                                <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
-                                </svg>
-                            </div>
-                            <span>{{ __('Submissions') }}</span>
-                            @php $newCount = \App\Models\ContactSubmission::new()->count(); @endphp
-                            @if($newCount > 0)
-                                <span class="ml-auto inline-flex h-5 min-w-[20px] items-center justify-center rounded-full bg-red-500 px-1.5 text-xs font-semibold text-white">
-                                    {{ $newCount }}
-                                </span>
-                            @endif
-                        </a>
+                        <div class="space-y-1">
+                            <a
+                                href="{{ route('admin.appointments.index') }}"
+                                wire:navigate
+                                class="group flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all duration-200 {{ request()->routeIs('admin.appointments.*') ? 'nav-item-active text-blue-600 dark:text-blue-400' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-white' }}"
+                            >
+                                <div class="flex h-9 w-9 items-center justify-center rounded-lg {{ request()->routeIs('admin.appointments.*') ? 'bg-gradient-to-br from-blue-500 to-cyan-500 text-white shadow-lg shadow-blue-500/30' : 'bg-slate-100 text-slate-500 group-hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-400 dark:group-hover:bg-slate-700' }} transition-all duration-200">
+                                    <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                                    </svg>
+                                </div>
+                                <span>{{ __('Appointments') }}</span>
+                                @php $pendingCount = \App\Models\Appointment::where('status', 'pending')->count(); @endphp
+                                @if($pendingCount > 0)
+                                    <span class="ml-auto inline-flex h-5 min-w-[20px] items-center justify-center rounded-full bg-amber-500 px-1.5 text-xs font-semibold text-white">
+                                        {{ $pendingCount }}
+                                    </span>
+                                @endif
+                            </a>
+                            <a
+                                href="{{ route('admin.submissions.index') }}"
+                                wire:navigate
+                                class="group flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all duration-200 {{ request()->routeIs('admin.submissions.*') ? 'nav-item-active text-blue-600 dark:text-blue-400' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-white' }}"
+                            >
+                                <div class="flex h-9 w-9 items-center justify-center rounded-lg {{ request()->routeIs('admin.submissions.*') ? 'bg-gradient-to-br from-blue-500 to-cyan-500 text-white shadow-lg shadow-blue-500/30' : 'bg-slate-100 text-slate-500 group-hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-400 dark:group-hover:bg-slate-700' }} transition-all duration-200">
+                                    <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                                    </svg>
+                                </div>
+                                <span>{{ __('Submissions') }}</span>
+                                @php $newCount = \App\Models\ContactSubmission::new()->count(); @endphp
+                                @if($newCount > 0)
+                                    <span class="ml-auto inline-flex h-5 min-w-[20px] items-center justify-center rounded-full bg-red-500 px-1.5 text-xs font-semibold text-white">
+                                        {{ $newCount }}
+                                    </span>
+                                @endif
+                            </a>
+                        </div>
                     </div>
 
                     <!-- Settings Section -->
