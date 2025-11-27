@@ -58,6 +58,9 @@
                 <a href="{{ route('about') }}" wire:navigate class="rounded-lg px-4 py-2 text-sm font-medium text-slate-700 transition-colors hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-white {{ request()->routeIs('about') ? 'bg-slate-100 text-slate-900 dark:bg-slate-800 dark:text-white' : '' }}">
                     {{ __('About Us') }}
                 </a>
+                <a href="{{ route('why-is-it-free') }}" wire:navigate class="rounded-lg px-4 py-2 text-sm font-medium text-slate-700 transition-colors hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-white {{ request()->routeIs('why-is-it-free') ? 'bg-slate-100 text-slate-900 dark:bg-slate-800 dark:text-white' : '' }}">
+                    {{ __('Why Is It Free') }}
+                </a>
                 <a href="{{ route('services') }}" wire:navigate class="rounded-lg px-4 py-2 text-sm font-medium text-slate-700 transition-colors hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-white {{ request()->routeIs('services') ? 'bg-slate-100 text-slate-900 dark:bg-slate-800 dark:text-white' : '' }}">
                     {{ __('Services') }}
                 </a>
@@ -124,6 +127,12 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
                 </svg>
                 {{ __('About Us') }}
+            </a>
+            <a href="{{ route('why-is-it-free') }}" wire:navigate @click="mobileOpen = false" class="flex items-center gap-3 rounded-xl px-4 py-3 text-base font-medium text-slate-700 transition-colors hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800 {{ request()->routeIs('why-is-it-free') ? 'bg-slate-100 text-slate-900 dark:bg-slate-800 dark:text-white' : '' }}">
+                <svg class="h-5 w-5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+                {{ __('Why Is It Free') }}
             </a>
             <a href="{{ route('services') }}" wire:navigate @click="mobileOpen = false" class="flex items-center gap-3 rounded-xl px-4 py-3 text-base font-medium text-slate-700 transition-colors hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800 {{ request()->routeIs('services') ? 'bg-slate-100 text-slate-900 dark:bg-slate-800 dark:text-white' : '' }}">
                 <svg class="h-5 w-5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">

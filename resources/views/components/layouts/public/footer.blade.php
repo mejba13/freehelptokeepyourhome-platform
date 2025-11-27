@@ -110,6 +110,12 @@
                         </a>
                     </li>
                     <li>
+                        <a href="{{ route('why-is-it-free') }}" class="group inline-flex items-center gap-2 text-slate-400 transition-colors duration-300 hover:text-white" wire:navigate>
+                            <span class="h-px w-0 bg-gradient-to-r from-blue-500 to-cyan-500 transition-all duration-300 group-hover:w-4"></span>
+                            {{ __('Why Is It Free') }}
+                        </a>
+                    </li>
+                    <li>
                         <a href="{{ route('services') }}" class="group inline-flex items-center gap-2 text-slate-400 transition-colors duration-300 hover:text-white" wire:navigate>
                             <span class="h-px w-0 bg-gradient-to-r from-blue-500 to-cyan-500 transition-all duration-300 group-hover:w-4"></span>
                             {{ __('Services') }}

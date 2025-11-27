@@ -8,6 +8,7 @@ use Livewire\Volt\Volt;
 Volt::route('/', 'public.home')->name('home');
 Volt::route('/about', 'public.about')->name('about');
 Volt::route('/services', 'public.services')->name('services');
+Volt::route('/why-is-it-free', 'public.why-is-it-free')->name('why-is-it-free');
 Volt::route('/testimonials', 'public.testimonials')->name('testimonials');
 Volt::route('/contact', 'public.contact')->name('contact');
 
